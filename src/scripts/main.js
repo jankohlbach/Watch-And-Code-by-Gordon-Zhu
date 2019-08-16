@@ -56,3 +56,9 @@ const todoList = {
     this.displayTodos();
   },
 };
+
+const displayTodosButton = document.querySelector('#displayTodosButton');
+displayTodosButton.addEventListener('click', todoList.displayTodos());
+
+const toggleAllButton = document.querySelector('#toggleAllButton');
+toggleAllButton.addEventListener('click', todoList.toggleAll());
