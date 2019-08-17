@@ -32,6 +32,10 @@ button {
   cursor: pointer;
   transition: opacity .3s;
 
+  &.delete-button {
+    padding: 3px 5px;
+  }
+
   &:hover {
     opacity: .8;
   }
@@ -50,5 +54,9 @@ ul {
 
   li {
     color: $color-light;
+
+    + li {
+      margin-top: 10px;
+    }
   }
 }
