@@ -57,8 +57,33 @@ const todoList = {
   },
 };
 
-const displayTodosButton = document.querySelector('#displayTodosButton');
-displayTodosButton.addEventListener('click', todoList.displayTodos());
-
-const toggleAllButton = document.querySelector('#toggleAllButton');
-toggleAllButton.addEventListener('click', todoList.toggleAll());
+const handlers = {
+  displayTodos() {
+    todoList.displayTodos();
+  },
+  addTodo() {
+    const addTodoTextInput = document.querySelector('#addTodoTextInput');
+    todoList.addTodo(addTodoTextInput.value);
+    addTodoTextInput.value = '';
+  },
+  changeTodo() {
+    const changeTodoPositionInput = document.querySelector('#changeTodoPositionInput');
+    const changeTodoTextInput = document.querySelector('#changeTodoTextInput');
+    todoList.changeTodo(changeTodoPositionInput.valueAsNumber, changeTodoTextInput.value);
+    changeTodoPositionInput.value = '';
+    changeTodoTextInput.value = '';
+  },
+  deleteTodo() {
+    const deleteTodoPositionInput = document.querySelector('#deleteTodoPositionInput');
+    todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
+    deleteTodoPositionInput.value = '';
+  },
+  toggleCompleted() {
+    const toggleCompletedPositionInput = document.querySelector('#toggleCompletedPositionInput');
+    todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
+    toggleCompletedPositionInput.value = '';
+  },
+  toggleAll() {
+    todoList.toggleAll();
+  },
+};
