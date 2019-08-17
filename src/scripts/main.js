@@ -1,38 +1,19 @@
 const todoList = {
   todos: [],
-  displayTodos() {
-    if (this.todos.length === 0) {
-      console.log('Your todo list is empty!');
-    } else {
-      console.log('My Todos:');
-
-      for (let i = 0; i < this.todos.length; i += 1) {
-        if (this.todos[i].completed === true) {
-          console.log(`(x) ${this.todos[i].todoText}`);
-        } else {
-          console.log(`( ) ${this.todos[i].todoText}`);
-        }
-      }
-    }
-  },
   addTodo(todoText) {
     this.todos.push({
       todoText,
       completed: false,
     });
-    this.displayTodos();
   },
   changeTodo(position, todoText) {
     this.todos[position].todoText = todoText;
-    this.displayTodos();
   },
   deleteTodo(position) {
     this.todos.splice(position, 1);
-    this.displayTodos();
   },
   toggleCompleted(position) {
     this.todos[position].completed = !this.todos[position].completed;
-    this.displayTodos();
   },
   toggleAll() {
     let completedTodos = 0;
@@ -52,19 +33,38 @@ const todoList = {
         this.todos[i].completed = true;
       }
     }
-
-    this.displayTodos();
   },
 };
 
-const handlers = {
+const view = {
   displayTodos() {
-    todoList.displayTodos();
+    const todosUl = document.querySelector('ul.todos');
+    todosUl.innerHTML = '';
+
+    for (let i = 0; i < todoList.todos.length; i += 1) {
+      const todo = todoList.todos[i];
+      const todoLi = document.createElement('li');
+      let todoTextWithCompletion = '';
+
+      if (todo.completed === true) {
+        todoTextWithCompletion = `(x) ${todo.todoText}`;
+      } else {
+        todoTextWithCompletion = `( ) ${todo.todoText}`;
+      }
+
+      todoLi.textContent = todoTextWithCompletion;
+      todosUl.appendChild(todoLi);
+    }
   },
+};
+
+
+const handlers = {
   addTodo() {
     const addTodoTextInput = document.querySelector('#addTodoTextInput');
     todoList.addTodo(addTodoTextInput.value);
     addTodoTextInput.value = '';
+    view.displayTodos();
   },
   changeTodo() {
     const changeTodoPositionInput = document.querySelector('#changeTodoPositionInput');
@@ -72,18 +72,22 @@ const handlers = {
     todoList.changeTodo(changeTodoPositionInput.valueAsNumber, changeTodoTextInput.value);
     changeTodoPositionInput.value = '';
     changeTodoTextInput.value = '';
+    view.displayTodos();
   },
   deleteTodo() {
     const deleteTodoPositionInput = document.querySelector('#deleteTodoPositionInput');
     todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
     deleteTodoPositionInput.value = '';
+    view.displayTodos();
   },
   toggleCompleted() {
     const toggleCompletedPositionInput = document.querySelector('#toggleCompletedPositionInput');
     todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
     toggleCompletedPositionInput.value = '';
+    view.displayTodos();
   },
   toggleAll() {
     todoList.toggleAll();
+    view.displayTodos();
   },
 };
