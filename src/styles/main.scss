@@ -32,8 +32,10 @@ button {
   cursor: pointer;
   transition: opacity .3s;
 
-  &.delete-button {
+  &.delete-button,
+  &.toggle-button {
     padding: 3px 5px;
+    margin-right: 10px;
   }
 
   &:hover {

@@ -53,9 +53,17 @@ const view = {
 
       todoLi.id = i;
       todoLi.textContent = todoTextWithCompletion;
+      todoLi.appendChild(this.createToggleButton());
       todoLi.appendChild(this.createDeleteButton());
       todosUl.appendChild(todoLi);
     });
+  },
+  createToggleButton() {
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Toggle';
+    toggleButton.className = 'toggle-button';
+
+    return toggleButton;
   },
   createDeleteButton() {
     const deleteButton = document.createElement('button');
@@ -71,6 +79,8 @@ const view = {
 
       if (elementClicked.className === 'delete-button') {
         handlers.deleteTodo(elementClicked.parentNode.id);
+      } else if (elementClicked.className === 'toggle-button') {
+        handlers.toggleCompleted(elementClicked.parentNode.id);
       }
     });
   },
@@ -95,10 +105,8 @@ const handlers = {
     todoList.deleteTodo(position);
     view.displayTodos();
   },
-  toggleCompleted() {
-    const toggleCompletedPositionInput = document.querySelector('#toggleCompletedPositionInput');
-    todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
-    toggleCompletedPositionInput.value = '';
+  toggleCompleted(position) {
+    todoList.toggleCompleted(position);
     view.displayTodos();
   },
   toggleAll() {
