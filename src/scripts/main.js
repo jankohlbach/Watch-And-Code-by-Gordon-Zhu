@@ -18,21 +18,21 @@ const todoList = {
   toggleAll() {
     let completedTodos = 0;
 
-    for (let i = 0; i < this.todos.length; i += 1) {
-      if (this.todos[i].completed === true) {
+    this.todos.forEach((todo) => {
+      if (todo.completed === true) {
         completedTodos += 1;
       }
-    }
+    });
 
-    if (completedTodos === this.todos.length) {
-      for (let i = 0; i < this.todos.length; i += 1) {
-        this.todos[i].completed = false;
+    this.todos.forEach((todoElement) => {
+      const todo = todoElement;
+
+      if (completedTodos === this.todos.length) {
+        todo.completed = false;
+      } else {
+        todo.completed = true;
       }
-    } else {
-      for (let i = 0; i < this.todos.length; i += 1) {
-        this.todos[i].completed = true;
-      }
-    }
+    });
   },
 };
 
@@ -41,8 +41,7 @@ const view = {
     const todosUl = document.querySelector('ul.todos');
     todosUl.innerHTML = '';
 
-    for (let i = 0; i < todoList.todos.length; i += 1) {
-      const todo = todoList.todos[i];
+    todoList.todos.forEach((todo, i) => {
       const todoLi = document.createElement('li');
       let todoTextWithCompletion = '';
 
@@ -56,7 +55,7 @@ const view = {
       todoLi.textContent = todoTextWithCompletion;
       todoLi.appendChild(this.createDeleteButton());
       todosUl.appendChild(todoLi);
-    }
+    });
   },
   createDeleteButton() {
     const deleteButton = document.createElement('button');
