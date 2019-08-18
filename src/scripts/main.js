@@ -1,118 +1,106 @@
-const todoList = {
-  todos: [],
-  addTodo(todoText) {
+class TodoList {
+  constructor() {
+    this.todos = [];
+    this.toggleAll = this.toggleAll.bind(this);
+    this.constructor.toggleCompleted = this.constructor.toggleCompleted.bind(this);
+    this.constructor.deleteTodo = this.constructor.deleteTodo.bind(this);
+  }
+
+  updateList() {
+    const todosUl = document.querySelector('ul.todos');
+    todosUl.innerHTML = '';
+
+    this.todos.forEach((todo, i) => {
+      const todoLi = document.createElement('li');
+
+      todoLi.id = i;
+      todoLi.textContent = todo.completed ? `(x) ${todo.text}` : `( ) ${todo.text}`;
+      todoLi.appendChild(this.constructor.createToggleButton());
+      todoLi.appendChild(this.constructor.createDeleteButton());
+      todosUl.appendChild(todoLi);
+    });
+  }
+
+  addTodo(text) {
     this.todos.push({
-      todoText,
+      text,
       completed: false,
     });
-  },
-  changeTodo(position, todoText) {
-    this.todos[position].todoText = todoText;
-  },
-  deleteTodo(position) {
-    this.todos.splice(position, 1);
-  },
-  toggleCompleted(position) {
-    this.todos[position].completed = !this.todos[position].completed;
-  },
+
+    this.updateList();
+  }
+
+  changeTodo(position, text) {
+    this.todos[position].text = text;
+    this.updateList();
+  }
+
   toggleAll() {
     let completedTodos = 0;
 
     this.todos.forEach((todo) => {
-      if (todo.completed === true) {
-        completedTodos += 1;
-      }
+      completedTodos = todo.completed ? completedTodos += 1 : completedTodos;
     });
 
     this.todos.forEach((todoElement) => {
       const todo = todoElement;
-
-      if (completedTodos === this.todos.length) {
-        todo.completed = false;
-      } else {
-        todo.completed = true;
-      }
+      todo.completed = completedTodos !== this.todos.length;
     });
-  },
-};
 
-const view = {
-  displayTodos() {
-    const todosUl = document.querySelector('ul.todos');
-    todosUl.innerHTML = '';
+    this.updateList();
+  }
 
-    todoList.todos.forEach((todo, i) => {
-      const todoLi = document.createElement('li');
-      let todoTextWithCompletion = '';
+  static toggleCompleted(position) {
+    this.todos[position].completed = !this.todos[position].completed;
+    this.updateList();
+  }
 
-      if (todo.completed === true) {
-        todoTextWithCompletion = `(x) ${todo.todoText}`;
-      } else {
-        todoTextWithCompletion = `( ) ${todo.todoText}`;
-      }
+  static deleteTodo(position) {
+    this.todos.splice(position, 1);
+    this.updateList();
+  }
 
-      todoLi.id = i;
-      todoLi.textContent = todoTextWithCompletion;
-      todoLi.appendChild(this.createToggleButton());
-      todoLi.appendChild(this.createDeleteButton());
-      todosUl.appendChild(todoLi);
-    });
-  },
-  createToggleButton() {
+  static createToggleButton() {
     const toggleButton = document.createElement('button');
     toggleButton.textContent = 'Toggle';
-    toggleButton.className = 'toggle-button';
-
+    toggleButton.className = 'button-toggle';
     return toggleButton;
-  },
-  createDeleteButton() {
+  }
+
+  static createDeleteButton() {
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
-    deleteButton.className = 'delete-button';
-
+    deleteButton.className = 'button-delete';
     return deleteButton;
-  },
+  }
+
   setUpEventListeners() {
+    const buttonToggleAll = document.querySelector('#button-toggle-all');
+    buttonToggleAll.addEventListener('click', this.toggleAll);
+
+    const buttonAddTodo = document.querySelector('#button-add-todo');
+    const addTodoText = document.querySelector('#input-add-todo-text');
+    buttonAddTodo.addEventListener('click', () => {
+      this.addTodo(addTodoText.value);
+    });
+
+    const buttonChangeTodo = document.querySelector('#button-change-todo');
+    const changeTodoPosition = document.querySelector('#input-change-todo-position');
+    const changeTodoText = document.querySelector('#input-change-todo-text');
+    buttonChangeTodo.addEventListener('click', () => {
+      this.changeTodo(changeTodoPosition.value, changeTodoText.value);
+    });
+
     const todosUl = document.querySelector('ul.todos');
     todosUl.addEventListener('click', (e) => {
-      const elementClicked = e.target;
-
-      if (elementClicked.className === 'delete-button') {
-        handlers.deleteTodo(elementClicked.parentNode.id);
-      } else if (elementClicked.className === 'toggle-button') {
-        handlers.toggleCompleted(elementClicked.parentNode.id);
+      if (e.target.className === 'button-toggle') {
+        this.constructor.toggleCompleted(e.target.parentNode.id);
+      } else if (e.target.className === 'button-delete') {
+        this.constructor.deleteTodo(e.target.parentNode.id);
       }
     });
-  },
-};
+  }
+}
 
-const handlers = {
-  addTodo() {
-    const addTodoTextInput = document.querySelector('#addTodoTextInput');
-    todoList.addTodo(addTodoTextInput.value);
-    addTodoTextInput.value = '';
-    view.displayTodos();
-  },
-  changeTodo() {
-    const changeTodoPositionInput = document.querySelector('#changeTodoPositionInput');
-    const changeTodoTextInput = document.querySelector('#changeTodoTextInput');
-    todoList.changeTodo(changeTodoPositionInput.valueAsNumber, changeTodoTextInput.value);
-    changeTodoPositionInput.value = '';
-    changeTodoTextInput.value = '';
-    view.displayTodos();
-  },
-  deleteTodo(position) {
-    todoList.deleteTodo(position);
-    view.displayTodos();
-  },
-  toggleCompleted(position) {
-    todoList.toggleCompleted(position);
-    view.displayTodos();
-  },
-  toggleAll() {
-    todoList.toggleAll();
-    view.displayTodos();
-  },
-};
-
-view.setUpEventListeners();
+const todoList = new TodoList();
+todoList.setUpEventListeners();
